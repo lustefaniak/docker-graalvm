@@ -7,7 +7,7 @@ ENV GRAAL_CE_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/
 
 RUN apk add --no-cache wget tar gzip
 RUN wget -q $GRAAL_CE_URL -O graalvm-ce-linux-amd64.tar.gz
-RUN tar -xvzf graalvm-ce-linux-amd64.tar.gz
+RUN tar -xzf graalvm-ce-linux-amd64.tar.gz
 RUN mkdir -p /usr/lib/jvm
 RUN mv graalvm-ce-java${BUILD_JAVA_VERSION}-${BUILD_GRAAL_VERSION} /usr/lib/jvm/graalvm
 RUN find /usr/lib/jvm/graalvm -iname java.security | xargs -n1 sed -i s/#networkaddress.cache.ttl=-1/networkaddress.cache.ttl=10/
@@ -60,7 +60,7 @@ RUN rm -rf /usr/lib/jvm/graalvm/*src.zip \
     /usr/lib/jvm/graalvm/jre/bin/polyglot \
     /usr/lib/jvm/graalvm/sample/
 
-RUN du -m /usr/lib/jvm/graalvm | sort -n
+RUN du -m /usr/lib/jvm/graalvm | sort -n | tail -n 100
 
 
 FROM alpine:3.10.3
