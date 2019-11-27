@@ -1,17 +1,15 @@
 name: Docker Image CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [19.3.0]
+        graalvm: [19.3.0]
         java: [8, 11]
     steps:
-    - uses: actions/checkout@v1
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag lustefaniak/graalvm:$(date +%s)
+      - uses: actions/checkout@v1
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --build-arg BUILD_JAVA_VERSION=${{ matrix.java }} --build-arg BUILD_GRAAL_VERSION=${{ matrix.graalvm }} --tag lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }}
