@@ -13,3 +13,5 @@ jobs:
       - uses: actions/checkout@v1
       - name: Build the Docker image
         run: docker build . --file Dockerfile --build-arg BUILD_JAVA_VERSION=${{ matrix.java }} --build-arg BUILD_GRAAL_VERSION=${{ matrix.graalvm }} --tag lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }}
+      - name: Test it starts
+        run: docker run --rm lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }}
