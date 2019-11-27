@@ -7,7 +7,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        version: [19.3.0]
+        java: [8, 11]
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
