@@ -10,7 +10,7 @@ RUN wget -q $GRAAL_CE_URL -O graalvm-ce-linux-amd64.tar.gz
 RUN tar -xvzf graalvm-ce-linux-amd64.tar.gz
 RUN mkdir -p /usr/lib/jvm
 RUN mv graalvm-ce-java${BUILD_JAVA_VERSION}-${BUILD_GRAAL_VERSION} /usr/lib/jvm/graalvm
-RUN sed -i s/#networkaddress.cache.ttl=-1/networkaddress.cache.ttl=10/ /usr/lib/jvm/graalvm/jre/lib/security/java.security
+RUN find /usr/lib/jvm/graalvm -iname java.security | xargs -n1 sed -i s/#networkaddress.cache.ttl=-1/networkaddress.cache.ttl=10/
 RUN rm -rf /usr/lib/jvm/graalvm/*src.zip \
     /usr/lib/jvm/graalvm/man \
     /usr/lib/jvm/graalvm/lib/missioncontrol \
