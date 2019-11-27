@@ -16,6 +16,6 @@ jobs:
       - name: Test it starts
         run: docker run --rm lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }}
       - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u lustefaniak --password-stdin
       - name: Push snapshot version
         run: docker push lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }}
