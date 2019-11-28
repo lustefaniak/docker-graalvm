@@ -47,8 +47,6 @@ RUN JRE_DIR=$(find /usr/lib/jvm/graalvm -name languages | sed 's/\/languages//')
     ${JRE_DIR}/lib/polyglot/ \
     ${JRE_DIR}/lib/installer/ \
     ${JRE_DIR}/lib/svm/ \
-    ${JRE_DIR}/lib/truffle/ \
-    ${JRE_DIR}/lib/jvmci \
     ${JRE_DIR}/lib/installer \
     ${JRE_DIR}/tools/ \
     ${JRE_DIR}/bin/js \
