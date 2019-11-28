@@ -11,54 +11,53 @@ RUN tar -xzf graalvm-ce-linux-amd64.tar.gz
 RUN mkdir -p /usr/lib/jvm
 RUN mv graalvm-ce-java${BUILD_JAVA_VERSION}-${BUILD_GRAAL_VERSION} /usr/lib/jvm/graalvm
 RUN find /usr/lib/jvm/graalvm -iname java.security | xargs -n1 sed -i s/#networkaddress.cache.ttl=-1/networkaddress.cache.ttl=10/
-RUN rm -rf /usr/lib/jvm/graalvm/*src.zip \
-    /usr/lib/jvm/graalvm/man \
+RUN JRE_DIR=$(find /usr/lib/jvm/graalvm -name languages | sed 's/\/languages//') && echo $JRE_DIR && rm -rf /usr/lib/jvm/graalvm/*src.zip \
     /usr/lib/jvm/graalvm/lib/missioncontrol \
     /usr/lib/jvm/graalvm/lib/visualvm \
     /usr/lib/jvm/graalvm/lib/*javafx* \
-    /usr/lib/jvm/graalvm/jre/plugin \
-    /usr/lib/jvm/graalvm/jre/bin/javaws \
-    /usr/lib/jvm/graalvm/jre/bin/jjs \
-    /usr/lib/jvm/graalvm/jre/bin/orbd \
-    /usr/lib/jvm/graalvm/jre/bin/pack200 \
-    /usr/lib/jvm/graalvm/jre/bin/policytool \
-    /usr/lib/jvm/graalvm/jre/bin/rmid \
-    /usr/lib/jvm/graalvm/jre/bin/rmiregistry \
-    /usr/lib/jvm/graalvm/jre/bin/servertool \
-    /usr/lib/jvm/graalvm/jre/bin/tnameserv \
-    /usr/lib/jvm/graalvm/jre/bin/unpack200 \
-    /usr/lib/jvm/graalvm/jre/lib/javaws.jar \
-    /usr/lib/jvm/graalvm/jre/lib/deploy* \
-    /usr/lib/jvm/graalvm/jre/lib/desktop \
-    /usr/lib/jvm/graalvm/jre/lib/*javafx* \
-    /usr/lib/jvm/graalvm/jre/lib/*jfx* \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libdecora_sse.so \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libprism_*.so \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libfxplugins.so \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libglass.so \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libgstreamer-lite.so \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libjavafx*.so \
-    /usr/lib/jvm/graalvm/jre/lib/amd64/libjfx*.so \
-    /usr/lib/jvm/graalvm/jre/lib/ext/jfxrt.jar \
-    /usr/lib/jvm/graalvm/jre/lib/ext/nashorn.jar \
-    /usr/lib/jvm/graalvm/jre/lib/oblique-fonts \
-    /usr/lib/jvm/graalvm/jre/lib/plugin.jar \
-    /usr/lib/jvm/graalvm/jre/languages/ \
-    /usr/lib/jvm/graalvm/jre/lib/polyglot/ \
-    /usr/lib/jvm/graalvm/jre/lib/installer/ \
-    /usr/lib/jvm/graalvm/jre/lib/svm/ \
-    /usr/lib/jvm/graalvm/jre/lib/truffle/ \
-    /usr/lib/jvm/graalvm/jre/lib/jvmci \
-    /usr/lib/jvm/graalvm/jre/lib/installer \
-    /usr/lib/jvm/graalvm/jre/tools/ \
-    /usr/lib/jvm/graalvm/jre/bin/js \
-    /usr/lib/jvm/graalvm/jre/bin/gu \
-    /usr/lib/jvm/graalvm/jre/bin/lli \
-    /usr/lib/jvm/graalvm/jre/bin/native-image \
-    /usr/lib/jvm/graalvm/jre/bin/node \
-    /usr/lib/jvm/graalvm/jre/bin/npm \
-    /usr/lib/jvm/graalvm/jre/bin/polyglot \
-    /usr/lib/jvm/graalvm/sample/
+    ${JRE_DIR}/plugin \
+    ${JRE_DIR}/legal \
+    ${JRE_DIR}/bin/javaws \
+    ${JRE_DIR}/bin/jjs \
+    ${JRE_DIR}/bin/orbd \
+    ${JRE_DIR}/bin/pack200 \
+    ${JRE_DIR}/bin/policytool \
+    ${JRE_DIR}/bin/rmid \
+    ${JRE_DIR}/bin/rmiregistry \
+    ${JRE_DIR}/bin/servertool \
+    ${JRE_DIR}/bin/tnameserv \
+    ${JRE_DIR}/bin/unpack200 \
+    ${JRE_DIR}/lib/javaws.jar \
+    ${JRE_DIR}/lib/deploy* \
+    ${JRE_DIR}/lib/desktop \
+    ${JRE_DIR}/lib/*javafx* \
+    ${JRE_DIR}/lib/*jfx* \
+    ${JRE_DIR}/lib/amd64/libdecora_sse.so \
+    ${JRE_DIR}/lib/amd64/libprism_*.so \
+    ${JRE_DIR}/lib/amd64/libfxplugins.so \
+    ${JRE_DIR}/lib/amd64/libglass.so \
+    ${JRE_DIR}/lib/amd64/libgstreamer-lite.so \
+    ${JRE_DIR}/lib/amd64/libjavafx*.so \
+    ${JRE_DIR}/lib/amd64/libjfx*.so \
+    ${JRE_DIR}/lib/ext/jfxrt.jar \
+    ${JRE_DIR}/lib/ext/nashorn.jar \
+    ${JRE_DIR}/lib/oblique-fonts \
+    ${JRE_DIR}/lib/plugin.jar \
+    ${JRE_DIR}/languages/ \
+    ${JRE_DIR}/lib/polyglot/ \
+    ${JRE_DIR}/lib/installer/ \
+    ${JRE_DIR}/lib/svm/ \
+    ${JRE_DIR}/lib/truffle/ \
+    ${JRE_DIR}/lib/jvmci \
+    ${JRE_DIR}/lib/installer \
+    ${JRE_DIR}/tools/ \
+    ${JRE_DIR}/bin/js \
+    ${JRE_DIR}/bin/gu \
+    ${JRE_DIR}/bin/lli \
+    ${JRE_DIR}/bin/native-image \
+    ${JRE_DIR}/bin/node \
+    ${JRE_DIR}/bin/npm \
+    ${JRE_DIR}/bin/polyglot
 
 RUN du -k /usr/lib/jvm/graalvm | sort -n | tail -n 100
 
