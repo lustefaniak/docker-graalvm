@@ -21,7 +21,7 @@ jobs:
         run: docker push lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }}
       - name: Push from master
         run: |
-          if [ "${{ github.ref }}" = "master" ]; then
+          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
             docker tag lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }} lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}
             docker tag lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}-${{ github.sha }} lustefaniak/graalvm:${{ matrix.java }}
             docker push lustefaniak/graalvm:${{ matrix.java }}-${{ matrix.graalvm }}
