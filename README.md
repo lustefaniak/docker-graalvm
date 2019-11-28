@@ -1,2 +1,5 @@
-# docker-graalvm2
-Docker image with minimal GraalVM JVM based on Alpine Linux
+# docker-graalvm
+
+Alpine based docker image using GraalVM as JVM.
+
+Download from https://hub.docker.com/r/lustefaniak/graalvm
