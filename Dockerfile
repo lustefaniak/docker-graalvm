@@ -1,7 +1,7 @@
 FROM alpine:3.10.3 AS build
 
 ARG BUILD_JAVA_VERSION=11
-ARG BUILD_GRAAL_VERSION=19.3.0
+ARG BUILD_GRAAL_VERSION=19.3.1
 
 ENV GRAAL_CE_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${BUILD_GRAAL_VERSION}/graalvm-ce-java${BUILD_JAVA_VERSION}-linux-amd64-${BUILD_GRAAL_VERSION}.tar.gz
 
