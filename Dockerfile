@@ -103,4 +103,4 @@ RUN apk add --no-cache alpine-baselayout ca-certificates bash curl procps
 
 COPY --from=build /usr/lib/jvm/graalvm /usr/lib/jvm/graalvm
 
-CMD java -version
+CMD java -version 2>&1
