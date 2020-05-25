@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        graalvm: [20.0.0]
+        graalvm: [20.1]
         java: [8, 11]
     steps:
       - uses: actions/checkout@v1
