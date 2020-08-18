@@ -1,7 +1,7 @@
-FROM alpine:3.10.3 AS build
+FROM alpine:3.11.6 AS build
 
 ARG BUILD_JAVA_VERSION=11
-ARG BUILD_GRAAL_VERSION=19.3.1
+ARG BUILD_GRAAL_VERSION=20.1.0
 
 ENV GRAAL_CE_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${BUILD_GRAAL_VERSION}/graalvm-ce-java${BUILD_JAVA_VERSION}-linux-amd64-${BUILD_GRAAL_VERSION}.tar.gz
 
@@ -60,7 +60,7 @@ RUN JRE_DIR=$(find /usr/lib/jvm/graalvm -name languages | sed 's/\/languages//')
 RUN du -k /usr/lib/jvm/graalvm | sort -n | tail -n 100
 
 
-FROM alpine:3.10.3
+FROM alpine:3.11.6
 ENV JAVA_HOME=/usr/lib/jvm/graalvm
 ENV GRAALVM_HOME=/usr/lib/jvm/graalvm
 ENV GRAAL_VERSION=${BUILD_GRAALVM_VERSION}
