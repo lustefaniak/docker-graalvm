@@ -99,7 +99,7 @@ RUN apk add --no-cache --virtual .build-deps curl binutils \
     && apk del --purge .build-deps glibc-i18n \
     && rm -rf /tmp/*.apk /tmp/gcc /tmp/gcc-libs.tar.xz /tmp/libz /tmp/libz.tar.xz /var/cache/apk/*
 
-RUN apk add --no-cache alpine-baselayout ca-certificates bash curl procps
+RUN apk add --no-cache alpine-baselayout ca-certificates bash curl procps fontconfig ttf-dejavu
 
 COPY --from=build /usr/lib/jvm/graalvm /usr/lib/jvm/graalvm
 
