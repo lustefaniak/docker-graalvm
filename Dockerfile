@@ -67,9 +67,9 @@ ENV GRAAL_VERSION=${BUILD_GRAALVM_VERSION}
 ENV PATH=$PATH:/usr/lib/jvm/graalvm/bin
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
-RUN apk add --no-cache alpine-baselayout ca-certificates bash curl procps fontconfig ttf-dejavu eudev-libs
+RUN apk add --no-cache alpine-baselayout ca-certificates bash curl procps fontconfig ttf-dejavu eudev-libs bc git openssh-client jq
 
-RUN apk add --no-cache --virtual .build-deps curl binutils \
+RUN apk add --no-cache --virtual .build-deps binutils \
     && GLIBC_VER="2.29-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
     && GCC_LIBS_URL="https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-9.1.0-2-x86_64.pkg.tar.xz" \
