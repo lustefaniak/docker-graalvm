@@ -1,15 +1,14 @@
-FROM alpine:3.11.6 AS build
+FROM alpine:3.12.1 AS build
 
-ARG BUILD_JAVA_VERSION=11
-ARG BUILD_GRAAL_VERSION=20.1.0
+ARG BUILD_GRAAL_VERSION=20.2.0
 
-ENV GRAAL_CE_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${BUILD_GRAAL_VERSION}/graalvm-ce-java${BUILD_JAVA_VERSION}-linux-amd64-${BUILD_GRAAL_VERSION}.tar.gz
+ENV GRAAL_CE_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${BUILD_GRAAL_VERSION}/graalvm-ce-java11-linux-amd64-${BUILD_GRAAL_VERSION}.tar.gz
 
 RUN apk add --no-cache wget tar gzip
 RUN wget -q $GRAAL_CE_URL -O graalvm-ce-linux-amd64.tar.gz
 RUN tar -xzf graalvm-ce-linux-amd64.tar.gz
 RUN mkdir -p /usr/lib/jvm
-RUN mv graalvm-ce-java${BUILD_JAVA_VERSION}-${BUILD_GRAAL_VERSION} /usr/lib/jvm/graalvm
+RUN mv graalvm-ce-java11-${BUILD_GRAAL_VERSION} /usr/lib/jvm/graalvm
 RUN find /usr/lib/jvm/graalvm -iname java.security | xargs -n1 sed -i s/#networkaddress.cache.ttl=-1/networkaddress.cache.ttl=10/
 RUN JRE_DIR=$(find /usr/lib/jvm/graalvm -name languages | sed 's/\/languages//') && echo $JRE_DIR && rm -rf /usr/lib/jvm/graalvm/*src.zip \
     /usr/lib/jvm/graalvm/lib/missioncontrol \
@@ -60,20 +59,32 @@ RUN JRE_DIR=$(find /usr/lib/jvm/graalvm -name languages | sed 's/\/languages//')
 RUN du -k /usr/lib/jvm/graalvm | sort -n | tail -n 100
 
 
-FROM alpine:3.11.6
+FROM alpine:3.12.1
 ENV JAVA_HOME=/usr/lib/jvm/graalvm
 ENV GRAALVM_HOME=/usr/lib/jvm/graalvm
 ENV GRAAL_VERSION=${BUILD_GRAALVM_VERSION}
 ENV PATH=$PATH:/usr/lib/jvm/graalvm/bin
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 
-RUN apk add --no-cache alpine-baselayout ca-certificates bash curl procps fontconfig ttf-dejavu eudev-libs bc git openssh-client jq
+RUN apk add --no-cache \
+    alpine-baselayout \
+    ca-certificates \
+    bash \
+    curl \
+    fontconfig \    
+    procps \
+    ttf-dejavu \
+    eudev-libs \
+    bc \
+    git \
+    openssh-client \
+    jq
 
-RUN apk add --no-cache --virtual .build-deps binutils \
-    && GLIBC_VER="2.29-r0" \
+RUN apk add --no-cache tzdata --virtual .build-deps curl binutils zstd \
+    && GLIBC_VER="2.31-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
-    && GCC_LIBS_URL="https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-9.1.0-2-x86_64.pkg.tar.xz" \
-    && GCC_LIBS_SHA256="91dba90f3c20d32fcf7f1dbe91523653018aa0b8d2230b00f822f6722804cf08" \
+    && GCC_LIBS_URL="https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-10.1.0-2-x86_64.pkg.tar.zst" \
+    && GCC_LIBS_SHA256="f80320a03ff73e82271064e4f684cd58d7dbdb07aa06a2c4eea8e0f3c507c45c" \
     && ZLIB_URL="https://archive.archlinux.org/packages/z/zlib/zlib-1%3A1.2.11-3-x86_64.pkg.tar.xz" \
     && ZLIB_SHA256=17aede0b9f8baa789c5aa3f358fbf8c68a5f1228c5e6cba1a5dd34102ef4d4e5 \
     && curl -LfsS https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub \
@@ -87,10 +98,11 @@ RUN apk add --no-cache --virtual .build-deps binutils \
     && apk add --no-cache /tmp/glibc-i18n-${GLIBC_VER}.apk \
     && /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true \
     && echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
-    && curl -LfsS ${GCC_LIBS_URL} -o /tmp/gcc-libs.tar.xz \
-    && echo "${GCC_LIBS_SHA256} */tmp/gcc-libs.tar.xz" | sha256sum -c - \
+    && curl -LfsS ${GCC_LIBS_URL} -o /tmp/gcc-libs.tar.zst \
+    && echo "${GCC_LIBS_SHA256} */tmp/gcc-libs.tar.zst" | sha256sum -c - \
     && mkdir /tmp/gcc \
-    && tar -xf /tmp/gcc-libs.tar.xz -C /tmp/gcc \
+    && zstd -d /tmp/gcc-libs.tar.zst --output-dir-flat /tmp \
+    && tar -xf /tmp/gcc-libs.tar -C /tmp/gcc \
     && mv /tmp/gcc/usr/lib/libgcc* /tmp/gcc/usr/lib/libstdc++* /usr/glibc-compat/lib \
     && strip /usr/glibc-compat/lib/libgcc_s.so.* /usr/glibc-compat/lib/libstdc++.so* \
     && curl -LfsS ${ZLIB_URL} -o /tmp/libz.tar.xz \
@@ -99,7 +111,7 @@ RUN apk add --no-cache --virtual .build-deps binutils \
     && tar -xf /tmp/libz.tar.xz -C /tmp/libz \
     && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
     && apk del --purge .build-deps glibc-i18n \
-    && rm -rf /tmp/*.apk /tmp/gcc /tmp/gcc-libs.tar.xz /tmp/libz /tmp/libz.tar.xz /var/cache/apk/*
+    && rm -rf /tmp/*.apk /tmp/gcc /tmp/gcc-libs.tar* /tmp/libz /tmp/libz.tar.xz /var/cache/apk/*
 
 COPY --from=build /usr/lib/jvm/graalvm /usr/lib/jvm/graalvm
 
