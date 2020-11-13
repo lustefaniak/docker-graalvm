@@ -4,7 +4,7 @@ ARG BUILD_GRAAL_VERSION=20.2.0
 
 ENV GRAAL_CE_URL=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${BUILD_GRAAL_VERSION}/graalvm-ce-java11-linux-amd64-${BUILD_GRAAL_VERSION}.tar.gz
 
-RUN apk add --no-cache wget tar gzip
+RUN apk add --no-cache wget tar gzip build-base
 RUN wget -q $GRAAL_CE_URL -O graalvm-ce-linux-amd64.tar.gz
 RUN tar -xzf graalvm-ce-linux-amd64.tar.gz
 RUN mkdir -p /usr/lib/jvm
@@ -58,6 +58,11 @@ RUN JRE_DIR=$(find /usr/lib/jvm/graalvm -name languages | sed 's/\/languages//')
 
 RUN du -k /usr/lib/jvm/graalvm | sort -n | tail -n 100
 
+RUN wget -O - https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2 | tar -xj && \
+    cd jemalloc-5.2.1 && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install
 
 FROM alpine:3.12.1
 ENV JAVA_HOME=/usr/lib/jvm/graalvm
@@ -114,5 +119,6 @@ RUN apk add --no-cache tzdata --virtual .build-deps curl binutils zstd \
     && rm -rf /tmp/*.apk /tmp/gcc /tmp/gcc-libs.tar* /tmp/libz /tmp/libz.tar.xz /var/cache/apk/*
 
 COPY --from=build /usr/lib/jvm/graalvm /usr/lib/jvm/graalvm
+COPY --from=build /usr/lib/libjemalloc.so.2 /usr/lib/
 
 CMD java -version
