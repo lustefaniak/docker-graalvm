@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        graalvm: [20.2.0]
+        graalvm: [20.3.0]
     steps:
       - uses: actions/checkout@v1
       - name: Build the Docker image
