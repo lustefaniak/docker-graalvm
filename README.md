@@ -8,8 +8,8 @@ It uses versioning based on: `<javaVersion>-<graalVersion>-<gitSha>`. Merges to 
 
 ```bash
 docker pull lustefaniak/graalvm:11
-docker pull lustefaniak/graalvm:11-20.2.0
-docker pull lustefaniak/graalvm:11-20.2.0-<gitSha>
+docker pull lustefaniak/graalvm:11-20.3.0
+docker pull lustefaniak/graalvm:11-20.3.0-<gitSha>
 ```
 
 ## Building
